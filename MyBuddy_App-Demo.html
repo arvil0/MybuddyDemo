@@ -1,0 +1,270 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>MyBuddy App – FAST Distribution Corp Presentation</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    body { font-family: 'Inter', sans-serif; }
+    .slide {
+      transition: opacity 0.5s ease, transform 0.5s ease;
+    }
+    .nav-btn:hover { background-color: rgba(255,255,255,0.25); }
+  </style>
+</head>
+
+<body class="bg-gradient-to-br from-[#0A1F44] via-[#0D3A7A] to-[#1B5BBF] text-white">
+
+<!-- HEADER -->
+<header class="px-6 py-4 flex justify-between items-center bg-white/10 backdrop-blur-sm shadow-md">
+  <h1 class="text-2xl font-bold tracking-tight">MyBuddy App – FAST Distribution Corp</h1>
+
+  <div class="flex gap-3">
+    <button id="prevBtn" class="nav-btn px-4 py-2 rounded-lg bg-white/10">❮ Prev</button>
+    <button id="nextBtn" class="nav-btn px-4 py-2 rounded-lg bg-white/10">Next ❯</button>
+    <button id="fsBtn" class="nav-btn px-4 py-2 rounded-lg bg-white/10">⛶ Fullscreen</button>
+  </div>
+</header>
+
+<!-- SLIDES -->
+<main class="relative h-[calc(100vh-100px)] overflow-hidden flex items-center justify-center">
+  <div id="slides" class="relative w-full h-full"></div>
+
+  <!-- FOOTER -->
+  <div class="absolute bottom-4 left-0 right-0 px-6 flex justify-between items-center">
+    <div id="counter" class="text-sm bg-white/20 px-3 py-1 rounded-lg"></div>
+
+    <div class="w-1/2 bg-white/20 h-2 rounded-full overflow-hidden">
+      <div id="progress" class="bg-white h-2 w-0 rounded-full transition-all duration-500"></div>
+    </div>
+  </div>
+</main>
+
+<script>
+
+const screenshotUrls = [
+  "https://res.cloudinary.com/djpnefefo/image/upload/v1777267306/menu.jpg",
+  "https://res.cloudinary.com/djpnefefo/image/upload/v1777267305/menu-inv_flgcwk.jpg",
+  "https://res.cloudinary.com/djpnefefo/image/upload/v1777267306/menu-dash_ym2eee.jpg",
+  "https://res.cloudinary.com/djpnefefo/image/upload/v1777267305/menu-repo_bpigrw.jpg",
+  "https://res.cloudinary.com/djpnefefo/image/upload/v1777267306/menu-sync_vyedjp.jpg",
+  "https://res.cloudinary.com/djpnefefo/image/upload/v1777267306/menu-settings_l2ds4t.jpg",
+  "https://res.cloudinary.com/djpnefefo/image/upload/v1777267305/customer-info_lsjco7.jpg",
+  "https://res.cloudinary.com/djpnefefo/image/upload/v1777267305/customer-details_cyhc4n.jpg",
+  "https://res.cloudinary.com/djpnefefo/image/upload/v1777267305/customer-ar_ybwngt.jpg",
+  "https://res.cloudinary.com/djpnefefo/image/upload/v1777267306/geo-lock_nqcwfi.jpg",
+  "https://res.cloudinary.com/djpnefefo/image/upload/v1777267306/prod-select_dwtec6.jpg",
+  "https://res.cloudinary.com/djpnefefo/image/upload/v1777267305/check-out_g4hmrc.jpg",
+  "https://res.cloudinary.com/djpnefefo/image/upload/v1777267306/dist-dash_mituku.jpg",
+  "https://res.cloudinary.com/djpnefefo/image/upload/v1777267307/notif_gyqjig.jpg",
+  "https://res.cloudinary.com/djpnefefo/image/upload/v1777267310/pay-prod_vlodml.jpg"
+];
+
+const slidesData = [
+
+  // OVERVIEW
+  {
+    title: "Overview",
+    html: `
+    <div class="bg-white rounded-3xl p-12 shadow-2xl text-gray-800 max-w-4xl mx-auto">
+      <h2 class="text-4xl font-bold text-[#0A1F44] mb-6">Sales Force Automation (SFA) Overview</h2>
+      <p class="text-lg mb-6">
+        MyBuddy App is a modern Sales Force Automation tool designed to streamline daily tasks of sales reps efficiently while on the field.
+      </p>
+    </div>`
+  },
+
+  // FEATURES
+  {
+    title: "Key Features",
+    html: `
+    <div class="bg-white rounded-3xl p-12 shadow-2xl text-gray-800 max-w-4xl mx-auto">
+      <h2 class="text-4xl font-bold text-[#0A1F44] mb-6">Key Features</h2>
+      <ul class="list-disc pl-6 space-y-3 text-lg">
+        <li>Real-Time Analytics</li>
+        <li>GPS Geotagging & Store Locking</li>
+        <li>Offline Capability</li>
+        <li>Activity Monitoring Dashboard</li>
+      </ul>
+    </div>`
+  },
+
+  // GPS
+  {
+    title: "GPS & Store-Locking",
+    html: `
+    <div class="bg-white rounded-3xl p-12 shadow-2xl text-gray-800 max-w-4xl mx-auto">
+      <h2 class="text-4xl font-bold text-[#0A1F44] mb-6">GPS & Store-Locking</h2>
+      <ul class="list-disc pl-6 space-y-3 text-lg">
+        <li>Exact store location tracking via GPS</li>
+        <li>Prevents fake visits and manipulation</li>
+        <li>Ensures field transparency</li>
+      </ul>
+    </div>`
+  },
+
+  // OFFLINE
+  {
+    title: "Offline Mode",
+    html: `
+    <div class="bg-white rounded-3xl p-12 shadow-2xl text-gray-800 max-w-4xl mx-auto">
+      <h2 class="text-4xl font-bold text-[#0A1F44] mb-6">Offline Mode</h2>
+      <ul class="list-disc pl-6 space-y-3 text-lg">
+        <li>Works without internet connection</li>
+        <li>Auto-sync when online</li>
+        <li>Ideal for remote areas</li>
+      </ul>
+    </div>`
+  },
+
+  // PROFILING
+  {
+    title: "Customer Profiling",
+    html: `
+    <div class="bg-white rounded-3xl p-12 shadow-2xl text-gray-800 max-w-4xl mx-auto">
+      <h2 class="text-4xl font-bold text-[#0A1F44] mb-6">Customer & Store Profiling</h2>
+      <ul class="list-disc pl-6 space-y-3 text-lg">
+        <li>Complete customer/store data</li>
+        <li>Purchase history tracking</li>
+        <li>Cross-sell & upsell insights</li>
+      </ul>
+    </div>`
+  },
+
+  // FORECAST
+  {
+    title: "Sales Forecasting",
+    html: `
+    <div class="bg-white rounded-3xl p-12 shadow-2xl text-gray-800 max-w-4xl mx-auto">
+      <h2 class="text-4xl font-bold text-[#0A1F44] mb-6">Sales Forecasting</h2>
+      <ul class="list-disc pl-6 space-y-3 text-lg">
+        <li>Predict future sales trends</li>
+        <li>Demand planning optimization</li>
+        <li>Inventory control efficiency</li>
+      </ul>
+    </div>`
+  },
+
+  // MONITORING
+  {
+    title: "Activity Monitoring",
+    html: `
+    <div class="bg-white rounded-3xl p-12 shadow-2xl text-gray-800 max-w-4xl mx-auto">
+      <h2 class="text-4xl font-bold text-[#0A1F44] mb-6">Activity Monitoring</h2>
+      <ul class="list-disc pl-6 space-y-3 text-lg">
+        <li>Real-time field tracking</li>
+        <li>Manager performance dashboard</li>
+        <li>Visit logs and order tracking</li>
+      </ul>
+    </div>`
+  },
+
+  // VALUE
+  {
+    title: "Value Proposition",
+    html: `
+    <div class="bg-white rounded-3xl p-12 shadow-2xl text-gray-800 max-w-4xl mx-auto">
+      <h2 class="text-4xl font-bold text-[#0A1F44] mb-6">Value Proposition</h2>
+      <ul class="list-disc pl-6 space-y-3 text-lg">
+        <li>Higher efficiency in field operations</li>
+        <li>Faster order processing</li>
+        <li>Transparent sales tracking</li>
+      </ul>
+    </div>`
+  },
+
+  // CHALLENGES
+  {
+    title: "Challenges",
+    html: `
+    <div class="bg-white rounded-3xl p-12 shadow-2xl text-gray-800 max-w-4xl mx-auto">
+      <h2 class="text-4xl font-bold text-[#0A1F44] mb-6">Challenges</h2>
+      <ul class="list-disc pl-6 space-y-3 text-lg">
+        <li>Connectivity issues in remote areas</li>
+        <li>User training requirements</li>
+        <li>Data privacy concerns</li>
+      </ul>
+    </div>`
+  },
+
+  // CONCLUSION
+  {
+    title: "Conclusion",
+    html: `
+    <div class="bg-white rounded-3xl p-12 shadow-2xl text-gray-800 max-w-4xl mx-auto text-center">
+      <h2 class="text-4xl font-bold text-[#0A1F44] mb-4">Conclusion</h2>
+      <p class="text-xl font-semibold">MyBuddy App = Modern SFA Solution</p>
+      <p class="text-lg mt-3">Smarter, faster, and more transparent sales operations.</p>
+    </div>`
+  },
+
+  // SCREENSHOTS (CLOUDINARY)
+  ...screenshotUrls.map((url, i) => ({
+    title: `Screenshot ${i + 1}`,
+    html: `
+    <div class="bg-white rounded-3xl p-6 shadow-2xl text-gray-800 max-w-4xl mx-auto flex justify-center">
+      <img src="${url}"
+           alt="Screenshot ${i + 1}"
+           class="w-full h-auto max-h-[70vh] object-contain rounded-xl">
+    </div>`
+  }))
+];
+
+
+// RENDER SLIDES
+const container = document.getElementById("slides");
+
+slidesData.forEach((s) => {
+  const el = document.createElement("section");
+  el.className = "slide absolute inset-0 flex justify-center items-center opacity-0";
+  el.innerHTML = s.html;
+  container.appendChild(el);
+});
+
+let current = 0;
+const total = slidesData.length;
+const counter = document.getElementById("counter");
+const progress = document.getElementById("progress");
+
+function showSlide(i) {
+  const slides = document.querySelectorAll(".slide");
+
+  slides.forEach((s, idx) => {
+    s.style.opacity = idx === i ? "1" : "0";
+    s.style.transform = idx === i ? "scale(1)" : "scale(0.97)";
+    s.style.pointerEvents = idx === i ? "auto" : "none";
+  });
+
+  current = i;
+  counter.textContent = `${i + 1} / ${total}`;
+  progress.style.width = `${((i + 1) / total) * 100}%`;
+}
+
+showSlide(0);
+
+// CONTROLS
+document.getElementById("prevBtn").onclick = () =>
+  showSlide((current - 1 + total) % total);
+
+document.getElementById("nextBtn").onclick = () =>
+  showSlide((current + 1) % total);
+
+document.addEventListener("keydown", (e) => {
+  if (e.key === "ArrowRight") document.getElementById("nextBtn").click();
+  if (e.key === "ArrowLeft") document.getElementById("prevBtn").click();
+});
+
+document.getElementById("fsBtn").onclick = () => {
+  if (!document.fullscreenElement) document.documentElement.requestFullscreen();
+  else document.exitFullscreen();
+};
+
+</script>
+
+</body>
+</html>
